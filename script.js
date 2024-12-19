@@ -11,6 +11,9 @@ let direction;
 let gameInterval;
 let gameStarted = false; // Flag to track the game state
 
+let score = 0;
+let topScore = 0;
+
 // Draw the game
 function drawGame() {
   clearCanvas();
@@ -24,6 +27,14 @@ function drawGame() {
 function clearCanvas() {
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
+
+// Update the top and current scores
+function updateScore() {
+  document.getElementById(
+    "currentScore"
+  ).textContent = `Current Score: ${score}`;
+  document.getElementById("topScore").textContent = `Top Score: ${topScore}`;
 }
 
 // Draw the snake
@@ -55,6 +66,9 @@ function moveSnake() {
   const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
   snake.unshift(head);
   if (head.x === food.x && head.y === food.y) {
+    score++; // Increase the score
+    if (score > topScore) topScore = score; // Update top score if necessary
+    updateScore();
     placeFood();
   } else {
     snake.pop();
@@ -102,6 +116,9 @@ function checkCollision() {
     ctx.font = "30px Arial";
     ctx.textAlign = "center";
     ctx.fillText("Game Over", canvas.width / 2, canvas.height / 2);
+
+    score = 0;
+    updateScore();
 
     gameStarted = false; // Mark the game as not started
   }

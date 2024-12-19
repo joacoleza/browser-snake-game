@@ -60,3 +60,13 @@ body {
 #startGameButton:active {
   background-color: #555;
 }
+
+#scoreBoard {
+  font-family: Arial, sans-serif;
+  font-size: 18px;
+  color: white;
+  background-color: black;
+  padding: 10px;
+  border-radius: 5px;
+  display: inline-block;
+}
