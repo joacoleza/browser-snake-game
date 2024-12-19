@@ -23,26 +23,45 @@ body {
   height: 300px;
 }
 
-.controls {
+#controls {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
+  margin-top: 20px;
 }
 
-.arrow {
-  background-color: #333;
+#controls > button {
+  width: 80px; /* Button width */
+  height: 80px; /* Button height */
+  font-size: 24px; /* Font size */
+  margin: 5px; /* Spacing between buttons */
+  background-color: #444; /* Background color */
+  color: white; /* Text color */
+  border: none; /* No border */
+  border-radius: 10px; /* Rounded corners */
+  cursor: pointer;
+}
+
+#controls > div {
+  display: flex;
+  justify-content: center;
+  margin-top: 5px; /* Space between "Up" and the row of buttons */
+}
+
+#controls > div > button {
+  width: 80px;
+  height: 80px;
+  font-size: 24px;
+  margin: 5px;
+  background-color: #444;
   color: white;
   border: none;
-  padding: 10px 20px;
-  font-size: 18px;
+  border-radius: 10px;
   cursor: pointer;
-  border-radius: 5px;
-  outline: none;
 }
 
-.arrow:active {
-  background-color: #555;
+#controls button:active {
+  background-color: #666; /* Change background when pressed */
 }
 
 #startGameButton {
