@@ -28,11 +28,16 @@ function clearCanvas() {
 
 // Draw the snake
 function drawSnake() {
-  ctx.fillStyle = "lime";
-  for (let segment of snake) {
+  for (let i = 0; i < snake.length; i++) {
+    if (i === 0) {
+      // Ensure the head always has a unique style
+      ctx.fillStyle = "yellow";
+    } else {
+      ctx.fillStyle = "lime";
+    }
     ctx.fillRect(
-      segment.x * tileSize,
-      segment.y * tileSize,
+      snake[i].x * tileSize,
+      snake[i].y * tileSize,
       tileSize,
       tileSize
     );
@@ -77,33 +82,28 @@ function placeFood() {
 // Check for collisions
 function checkCollision() {
   const head = snake[0];
-  if (
-    head.x < 0 ||
-    head.y < 0 ||
-    head.x >= tileCount ||
-    head.y >= tileCount ||
-    snake
-      .slice(1)
-      .some((segment) => segment.x === head.x && segment.y === head.y)
-  ) {
-    // Immediately stop the game loop
-    clearInterval(gameInterval);
 
-    // Set snake's position to the border before showing the alert
-    if (head.x < 0) head.x = 0;
-    if (head.y < 0) head.y = 0;
-    if (head.x >= tileCount) head.x = tileCount - 1;
-    if (head.y >= tileCount) head.y = tileCount - 1;
+  // Check if the head is out of bounds or collides with the body
+  const hitWall =
+    head.x < 0 || head.y < 0 || head.x >= tileCount || head.y >= tileCount;
+  const hitSelf = snake
+    .slice(1)
+    .some((segment) => segment.x === head.x && segment.y === head.y);
 
-    // Now, draw the snake in its final position
-    drawSnake();
-    drawFood();
+  if (hitWall || hitSelf) {
+    clearInterval(gameInterval); // Stop the game loop
 
-    // Show the alert after the snake touches the border
-    alert("Game Over!");
+    // Draw a semi-transparent overlay over the entire canvas
+    ctx.fillStyle = "rgba(0, 0, 0, 0.8)"; // Black with more transparency
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Reset game state and prepare for next start
-    gameStarted = false;
+    // Display "Game Over" on the canvas
+    ctx.fillStyle = "white";
+    ctx.font = "30px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText("Game Over", canvas.width / 2, canvas.height / 2);
+
+    gameStarted = false; // Mark the game as not started
   }
 }
 
