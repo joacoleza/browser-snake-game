@@ -4,6 +4,7 @@ canvas.width = canvas.height = 300;
 
 const tileCount = 15;
 const tileSize = canvas.width / tileCount;
+const gameSpeed = 100;
 
 let snake;
 let food;
@@ -126,7 +127,6 @@ function checkCollision() {
 
 // Reset the game state
 function resetGame() {
-  clearInterval(gameInterval);
   snake = [
     { x: 7, y: 7 },
     { x: 6, y: 7 },
@@ -134,11 +134,34 @@ function resetGame() {
   ]; // Snake starts with length 3
   direction = { x: 1, y: 0 }; // Set initial direction to move right
   placeFood();
-  gameInterval = setInterval(drawGame, 100);
+  gameStarted = true;
+  gameLoop();
+}
+
+let lastRenderTime = 0;
+function gameLoop(currentTime) {
+  if (!gameStarted) return;
+
+  // Calculate the time since the last render
+  const timeSinceLastRender = currentTime - lastRenderTime;
+
+  // Run the game logic only if enough time has passed
+  if (timeSinceLastRender >= gameSpeed) {
+    drawGame();
+    lastRenderTime = currentTime;
+  }
+
+  // Schedule the next frame
+  requestAnimationFrame(gameLoop);
 }
 
 // Change the direction of the snake
+let lastDirectionChange = 0;
 function changeDirection(newDirection) {
+  const now = Date.now();
+  if (now - lastDirectionChange < 100) return; // Prevent rapid changes
+  lastDirectionChange = now;
+
   if (newDirection.x !== -direction.x && newDirection.y !== -direction.y) {
     direction = newDirection;
   }
@@ -166,10 +189,20 @@ document
   .getElementById("right")
   .addEventListener("click", () => changeDirection({ x: 1, y: 0 }));
 
+document
+  .getElementById("up")
+  .addEventListener("touchstart", () => changeDirection({ x: 0, y: -1 }));
+document
+  .getElementById("down")
+  .addEventListener("touchstart", () => changeDirection({ x: 0, y: 1 }));
+document
+  .getElementById("left")
+  .addEventListener("touchstart", () => changeDirection({ x: -1, y: 0 }));
+document
+  .getElementById("right")
+  .addEventListener("touchstart", () => changeDirection({ x: 1, y: 0 }));
+
 // Start the game when the "Start Game" button is clicked
 document.getElementById("startGameButton").addEventListener("click", () => {
-  if (!gameStarted) {
-    resetGame(); // Start the game when clicked
-    gameStarted = true; // Mark the game as started
-  }
+  resetGame(); // Start the game when clicked
 });
