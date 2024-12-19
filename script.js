@@ -4,12 +4,10 @@ canvas.width = canvas.height = 300;
 
 const tileCount = 15;
 const tileSize = canvas.width / tileCount;
-let snake = [{ x: 7, y: 7 }];
-let food = {
-  x: Math.floor(Math.random() * tileCount),
-  y: Math.floor(Math.random() * tileCount),
-};
-let direction = { x: 0, y: 0 };
+
+let snake;
+let food;
+let direction;
 let gameInterval;
 let gameStarted = false; // Flag to track the game state
 
@@ -52,13 +50,28 @@ function moveSnake() {
   const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
   snake.unshift(head);
   if (head.x === food.x && head.y === food.y) {
+    placeFood();
+  } else {
+    snake.pop();
+  }
+}
+
+function placeFood() {
+  let isOnSnake;
+  do {
+    isOnSnake = false;
     food = {
       x: Math.floor(Math.random() * tileCount),
       y: Math.floor(Math.random() * tileCount),
     };
-  } else {
-    snake.pop();
-  }
+    // Check if food overlaps with any snake segment
+    for (let segment of snake) {
+      if (segment.x === food.x && segment.y === food.y) {
+        isOnSnake = true;
+        break;
+      }
+    }
+  } while (isOnSnake);
 }
 
 // Check for collisions
@@ -96,17 +109,14 @@ function checkCollision() {
 
 // Reset the game state
 function resetGame() {
+  clearInterval(gameInterval);
   snake = [
     { x: 7, y: 7 },
     { x: 6, y: 7 },
     { x: 5, y: 7 },
   ]; // Snake starts with length 3
   direction = { x: 1, y: 0 }; // Set initial direction to move right
-  food = {
-    x: Math.floor(Math.random() * tileCount),
-    y: Math.floor(Math.random() * tileCount),
-  };
-  clearInterval(gameInterval);
+  placeFood();
   gameInterval = setInterval(drawGame, 100);
 }
 
