@@ -96,13 +96,18 @@ function checkCollision() {
 
 // Reset the game state
 function resetGame() {
-  snake = [{ x: 7, y: 7 }];
+  snake = [
+    { x: 7, y: 7 },
+    { x: 6, y: 7 },
+    { x: 5, y: 7 },
+  ]; // Snake starts with length 3
   direction = { x: 1, y: 0 }; // Set initial direction to move right
   food = {
     x: Math.floor(Math.random() * tileCount),
     y: Math.floor(Math.random() * tileCount),
   };
-  gameInterval = setInterval(drawGame, 100); // Start the game loop
+  clearInterval(gameInterval);
+  gameInterval = setInterval(drawGame, 100);
 }
 
 // Change the direction of the snake
