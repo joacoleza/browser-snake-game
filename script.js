@@ -11,7 +11,9 @@ let food = {
 };
 let direction = { x: 0, y: 0 };
 let gameInterval;
+let gameStarted = false; // Flag to track the game state
 
+// Draw the game
 function drawGame() {
   clearCanvas();
   drawSnake();
@@ -20,11 +22,13 @@ function drawGame() {
   checkCollision();
 }
 
+// Clear the canvas
 function clearCanvas() {
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
+// Draw the snake
 function drawSnake() {
   ctx.fillStyle = "lime";
   for (let segment of snake) {
@@ -37,11 +41,13 @@ function drawSnake() {
   }
 }
 
+// Draw the food
 function drawFood() {
   ctx.fillStyle = "red";
   ctx.fillRect(food.x * tileSize, food.y * tileSize, tileSize, tileSize);
 }
 
+// Move the snake
 function moveSnake() {
   const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
   snake.unshift(head);
@@ -55,6 +61,7 @@ function moveSnake() {
   }
 }
 
+// Check for collisions
 function checkCollision() {
   const head = snake[0];
   if (
@@ -72,6 +79,7 @@ function checkCollision() {
   }
 }
 
+// Reset the game state
 function resetGame() {
   snake = [{ x: 7, y: 7 }];
   direction = { x: 1, y: 0 }; // Set initial direction to move right
@@ -79,23 +87,25 @@ function resetGame() {
     x: Math.floor(Math.random() * tileCount),
     y: Math.floor(Math.random() * tileCount),
   };
-  clearInterval(gameInterval);
-  gameInterval = setInterval(drawGame, 100);
+  gameInterval = setInterval(drawGame, 100); // Start the game loop
 }
 
+// Change the direction of the snake
 function changeDirection(newDirection) {
   if (newDirection.x !== -direction.x && newDirection.y !== -direction.y) {
     direction = newDirection;
   }
 }
 
+// Keyboard controls for both arrow keys and WASD keys
 document.addEventListener("keydown", (e) => {
-  if (e.key === "ArrowUp") changeDirection({ x: 0, y: -1 });
-  if (e.key === "ArrowDown") changeDirection({ x: 0, y: 1 });
-  if (e.key === "ArrowLeft") changeDirection({ x: -1, y: 0 });
-  if (e.key === "ArrowRight") changeDirection({ x: 1, y: 0 });
+  if (e.key === "ArrowUp" || e.key === "w") changeDirection({ x: 0, y: -1 });
+  if (e.key === "ArrowDown" || e.key === "s") changeDirection({ x: 0, y: 1 });
+  if (e.key === "ArrowLeft" || e.key === "a") changeDirection({ x: -1, y: 0 });
+  if (e.key === "ArrowRight" || e.key === "d") changeDirection({ x: 1, y: 0 });
 });
 
+// Button controls for mobile and PC
 document
   .getElementById("up")
   .addEventListener("click", () => changeDirection({ x: 0, y: -1 }));
@@ -109,4 +119,10 @@ document
   .getElementById("right")
   .addEventListener("click", () => changeDirection({ x: 1, y: 0 }));
 
-resetGame();
+// Start the game when the "Start Game" button is clicked
+document.getElementById("startGameButton").addEventListener("click", () => {
+  if (!gameStarted) {
+    resetGame(); // Start the game when clicked
+    gameStarted = true; // Mark the game as started
+  }
+});
