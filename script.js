@@ -73,9 +73,24 @@ function checkCollision() {
       .slice(1)
       .some((segment) => segment.x === head.x && segment.y === head.y)
   ) {
+    // Immediately stop the game loop
     clearInterval(gameInterval);
+
+    // Set snake's position to the border before showing the alert
+    if (head.x < 0) head.x = 0;
+    if (head.y < 0) head.y = 0;
+    if (head.x >= tileCount) head.x = tileCount - 1;
+    if (head.y >= tileCount) head.y = tileCount - 1;
+
+    // Now, draw the snake in its final position
+    drawSnake();
+    drawFood();
+
+    // Show the alert after the snake touches the border
     alert("Game Over!");
-    resetGame();
+
+    // Reset game state and prepare for next start
+    gameStarted = false;
   }
 }
 
